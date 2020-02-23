@@ -84,6 +84,44 @@ Using images:
 docker pull <image-name>
 ```
 
+### Docker and Spring Boot
+
+Reference documentation [here](https://spring.io/guides/gs/spring-boot-docker).
+
+The `Dockerfile` is in the project root directory:
+
+```
+FROM openjdk:11-jdk
+LABEL maintainer="mark.lee@capricasoftware.co.uk"
+ARG GROUP=surly
+ARG USER=surly
+RUN groupadd ${GROUP} && useradd -g ${GROUP} -s /bin/sh ${USER}
+USER surly:surly
+ARG JAR_FILE=target/*.jar
+COPY ${JAR_FILE} surly.jar
+ENTRYPOINT ["java", "-jar", "surly.jar"]
+```
+
+Building the image:
+
+```
+docker build -t caprica/surly .
+```
+
+Listing the images:
+
+```
+docker images
+```
+
+Running the image locally:
+
+```
+docker run -i -t caprica/surly
+```
+
+_Note currently the container version does not work as-is because it tries to connect to a local DynamoDB instance._
+
 ## Kubernetes
 
 Reference documentation [here](https://kubernetes.io/docs/tasks).
