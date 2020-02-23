@@ -126,6 +126,46 @@ _Note currently the container version does not work as-is because it tries to co
 
 Reference documentation [here](https://kubernetes.io/docs/tasks).
 
+### Deployment
+
+Container configuration for the application is specified in a standard Kubernetes "deployment" file.
+
+In `surly-deployment.yaml`:
+
+```
+pending
+```
+
+### Secrets
+
+Passwords, credentials, and any sensitive information must of course not be committed to the repository.
+
+Instead, such values are specified in a standard Kubernetes "secret" file and later injected via environment variables
+when the container is created.
+
+Kubernetes secret values must be base64 encoded, using for example:
+
+```
+echo "my aws accesskey" | base64
+```
+
+In `surly-secret.yaml`:
+
+```
+pending
+```
+
+### Service
+
+To expose the application as a usable service, the necessary configuration is specified in a standard Kubernetes
+"service" file.
+
+In `surly-service.yaml`:
+
+```
+pending
+```
+
 ## Copyright and License
 
 This project is licensed according to the [Apache Software License 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt).

@@ -1,0 +1,16 @@
+# This is just a starter, it is incomplete and a work-in-progress
+apiVersion: v1
+kind: Service
+metadata:
+  name: surly-service
+spec:
+  ports:
+    - port: 8080
+      targetPort: 8080
+      name: http
+    - port: 8081
+      targetPort: 8081
+      name: management
+  selector:
+    app: surly
+  type: LoadBalancer
