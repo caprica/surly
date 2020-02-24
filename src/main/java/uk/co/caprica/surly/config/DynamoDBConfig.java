@@ -17,22 +17,22 @@
 package uk.co.caprica.surly.config;
 
 import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;
 import com.amazonaws.services.dynamodbv2.model.CreateTableResult;
 import com.amazonaws.services.dynamodbv2.model.DeleteTableRequest;
-import com.amazonaws.services.dynamodbv2.model.DescribeTableRequest;
-import com.amazonaws.services.dynamodbv2.model.DescribeTableResult;
+import com.amazonaws.services.dynamodbv2.model.DeleteTableResult;
 import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 import org.socialsignin.spring.data.dynamodb.repository.config.EnableDynamoDBRepositories;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.util.StringUtils;
 import uk.co.caprica.surly.shortener.Counter;
 import uk.co.caprica.surly.shortener.UrlInfo;
 
@@ -46,6 +46,9 @@ public class DynamoDBConfig {
     @Value("${amazon.dynamodb.endpoint}")
     private String amazonDynamoDBEndpoint;
 
+    @Value("${amazon.aws.region}")
+    private String amazonAWSRegion;
+
     @Value("${amazon.aws.accesskey}")
     private String amazonAWSAccessKey;
 
@@ -54,38 +57,16 @@ public class DynamoDBConfig {
 
     @Bean
     public AmazonDynamoDB amazonDynamoDB() {
-        AmazonDynamoDB amazonDynamoDB = new AmazonDynamoDBClient(amazonAWSCredentials());
-
-        if (!StringUtils.isEmpty(amazonDynamoDBEndpoint)) {
-            amazonDynamoDB.setEndpoint(amazonDynamoDBEndpoint);
-        }
+        AmazonDynamoDB amazonDynamoDB = AmazonDynamoDBClientBuilder
+            .standard()
+            .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(amazonDynamoDBEndpoint, amazonAWSRegion))
+            .withCredentials(new AWSStaticCredentialsProvider(amazonAWSCredentials()))
+            .build();
 
         DynamoDBMapper dynamoDBMapper = new DynamoDBMapper(amazonDynamoDB);
 
-        try {
-            DeleteTableRequest deleteTableRequest = dynamoDBMapper.generateDeleteTableRequest(UrlInfo.class);
-            amazonDynamoDB.deleteTable(deleteTableRequest);
-        } catch (ResourceNotFoundException e) {
-        }
-
-        try {
-            DeleteTableRequest deleteTableRequest = dynamoDBMapper.generateDeleteTableRequest(Counter.class);
-            amazonDynamoDB.deleteTable(deleteTableRequest);
-        } catch (ResourceNotFoundException e) {
-        }
-
-        CreateTableRequest tableRequest = dynamoDBMapper.generateCreateTableRequest(UrlInfo.class);
-        tableRequest.setProvisionedThroughput(new ProvisionedThroughput(1L, 1L));
-        CreateTableResult r = amazonDynamoDB.createTable(tableRequest);
-
-        CreateTableRequest t2 = dynamoDBMapper.generateCreateTableRequest(Counter.class);
-        t2.setProvisionedThroughput(new ProvisionedThroughput(1L, 1L));
-        r = amazonDynamoDB.createTable(t2);
-
-        DescribeTableRequest dt = new DescribeTableRequest().withTableName("UrlInfo");
-        DescribeTableResult dr = amazonDynamoDB.describeTable(dt);
-
-//        counterRepository.save(new Counter("HashId", 0L));
+        deleteTables(amazonDynamoDB, dynamoDBMapper);
+        createTables(amazonDynamoDB, dynamoDBMapper);
 
         return amazonDynamoDB;
     }
@@ -94,5 +75,29 @@ public class DynamoDBConfig {
     @Bean
     public AWSCredentials amazonAWSCredentials() {
         return new BasicAWSCredentials(amazonAWSAccessKey, amazonAWSSecretKey);
+    }
+
+    private static void deleteTables(AmazonDynamoDB amazonDynamoDB, DynamoDBMapper dynamoDBMapper) {
+        try {
+            DeleteTableRequest deleteTableRequest = dynamoDBMapper.generateDeleteTableRequest(UrlInfo.class);
+            DeleteTableResult deleteTableResult = amazonDynamoDB.deleteTable(deleteTableRequest);
+        } catch (ResourceNotFoundException e) {
+        }
+
+        try {
+            DeleteTableRequest deleteTableRequest = dynamoDBMapper.generateDeleteTableRequest(Counter.class);
+            DeleteTableResult deleteTableResult = amazonDynamoDB.deleteTable(deleteTableRequest);
+        } catch (ResourceNotFoundException e) {
+        }
+    }
+
+    private static void createTables(AmazonDynamoDB amazonDynamoDB, DynamoDBMapper dynamoDBMapper) {
+        CreateTableRequest createUrlInfoTableRequest = dynamoDBMapper.generateCreateTableRequest(UrlInfo.class);
+        createUrlInfoTableRequest.setProvisionedThroughput(new ProvisionedThroughput(1L, 1L));
+        CreateTableResult createUrlInfoTableResponse = amazonDynamoDB.createTable(createUrlInfoTableRequest);
+
+        CreateTableRequest createCounterTableRequest = dynamoDBMapper.generateCreateTableRequest(Counter.class);
+        createCounterTableRequest.setProvisionedThroughput(new ProvisionedThroughput(1L, 1L));
+        CreateTableResult createCounterTableResponse = amazonDynamoDB.createTable(createCounterTableRequest);
     }
 }
