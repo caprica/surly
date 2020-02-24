@@ -28,6 +28,12 @@ matter when running locally, but do not do this in a public Production environme
 It is advisable to run a local instance of DynamoDB for testing, for information on how to do that see the AWS guide
 [here](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.DownloadingAndRunning.html).
 
+To run the local DynamoDB server:
+
+```
+java -jar DynamoDBLocal.jar
+```
+
 ## Running
 
 The main goal is to use Kubernetes and Docker to deploy and run this application in an AWS cloud environment.
