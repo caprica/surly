@@ -17,8 +17,11 @@
 package uk.co.caprica.surly.shortener.hashids;
 
 import org.hashids.Hashids;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 import uk.co.caprica.surly.shortener.HashGenerator;
+
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * Implementation of a component that generates hash strings using the Hashids library.
@@ -26,10 +29,13 @@ import uk.co.caprica.surly.shortener.HashGenerator;
 @Component
 public class HashidsHashGenerator implements HashGenerator {
 
+    private static final Logger log = getLogger(HashidsHashGenerator.class);
+
     private static final Hashids hashids = new Hashids("i am a secret salt", 6); // FIXME pull from environment config?
 
     @Override
     public String generateHash(long value) {
+        log.debug("generateHash(value={})", value);
         return hashids.encode(value);
     }
 }

@@ -16,16 +16,21 @@
 
 package uk.co.caprica.surly.shortener;
 
+import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.Optional;
+
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * Implementation of a URL Shortener service.
  */
 @Service
 public class UrlShortenerService implements UrlShortener.Service {
+
+    private static final Logger log = getLogger(UrlShortenerService.class);
 
     private final UrlInfoRepository urlInfoRepository;
 
@@ -41,6 +46,7 @@ public class UrlShortenerService implements UrlShortener.Service {
 
     @Override
     public String getShortUrl(String longUrl) {
+        log.info("getShortUrl(longUrl={})", longUrl);
         return urlInfoRepository.findByLongUrl(longUrl)
             .map(UrlInfo::getToken)
             .orElseGet(() -> createShortUrl(longUrl));
@@ -48,6 +54,7 @@ public class UrlShortenerService implements UrlShortener.Service {
 
     @Override
     public Optional<String> getLongUrl(String token) {
+        log.info("getLongUrl(token={})", token);
         return urlInfoRepository.findById(token)
             .map(UrlInfo::getLongUrl);
     }
@@ -62,7 +69,9 @@ public class UrlShortenerService implements UrlShortener.Service {
      * @return short URL
      */
     private String createShortUrl(String longUrl) {
+        log.debug("createShortUrl(longUrl={})", longUrl);
         String token = hashGenerator.generateHash(atomicCounter.nextValue());
+        log.debug("token={}", token);
         urlInfoRepository.save(new UrlInfo(token, longUrl, new Date()));    // FIXME we might consider implementing a clock component instead of new Date() here
         return token;
     }

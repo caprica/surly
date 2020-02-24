@@ -16,6 +16,7 @@
 
 package uk.co.caprica.surly.shortener;
 
+import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,10 +24,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import uk.co.caprica.surly.shortener.UrlShortenerService;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import static org.slf4j.LoggerFactory.getLogger;
 
 // FIXME refactor this to throw exceptions and use an exceptionhandler rather than returning responseentity?
 
@@ -35,6 +37,8 @@ import java.net.URL;
  */
 @RestController
 public class UrlShortenerController {
+
+    private static final Logger log = getLogger(UrlShortenerController.class);
 
     private final UrlShortenerService urlShortenerService;
 
@@ -50,6 +54,7 @@ public class UrlShortenerController {
      */
     @PostMapping("/u")
     public ResponseEntity<String> getShortUrl(@RequestBody String longUrl) {
+        log.info("getShortUrl(longUrl={})", longUrl);
         try {
             new URL(longUrl);
             return new ResponseEntity<>(urlShortenerService.getShortUrl(longUrl), HttpStatus.CREATED);
@@ -66,6 +71,7 @@ public class UrlShortenerController {
      */
     @GetMapping("/u/{token}")
     public ResponseEntity<String> getLongUrl(@PathVariable("token") String token) {
+        log.info("getLongUrl(token={})", token);
         return urlShortenerService.getLongUrl(token)
             .map(longUrl -> new ResponseEntity<>(longUrl, HttpStatus.FOUND))
             .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));

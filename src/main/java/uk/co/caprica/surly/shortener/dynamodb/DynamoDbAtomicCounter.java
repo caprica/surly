@@ -22,14 +22,19 @@ import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.AttributeValueUpdate;
 import com.amazonaws.services.dynamodbv2.model.ReturnValue;
 import com.amazonaws.services.dynamodbv2.model.UpdateItemRequest;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 import uk.co.caprica.surly.shortener.AtomicCounter;
+
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * An atomic counter implemented using DynamoDB.
  */
 @Component
 public class DynamoDbAtomicCounter implements AtomicCounter {
+
+    private static final Logger log = getLogger(DynamoDbAtomicCounter.class);
 
     private static final String COUNTER_NAME = "HashId";
 
@@ -41,6 +46,7 @@ public class DynamoDbAtomicCounter implements AtomicCounter {
 
     @Override
     public long nextValue() {
+        log.debug("nextValue()");
         UpdateItemRequest updateItemRequest =
             new UpdateItemRequest()
                 .withTableName("Counter")

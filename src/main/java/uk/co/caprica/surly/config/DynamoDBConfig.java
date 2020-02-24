@@ -29,6 +29,7 @@ import com.amazonaws.services.dynamodbv2.model.DeleteTableRequest;
 import com.amazonaws.services.dynamodbv2.model.DeleteTableResult;
 import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
+import org.slf4j.Logger;
 import org.socialsignin.spring.data.dynamodb.repository.config.EnableDynamoDBRepositories;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -36,12 +37,16 @@ import org.springframework.context.annotation.Configuration;
 import uk.co.caprica.surly.shortener.Counter;
 import uk.co.caprica.surly.shortener.UrlInfo;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 /**
  * Configuration for DynamoDB.
  */
 @Configuration
 @EnableDynamoDBRepositories(basePackages = "uk.co.caprica.surly.shortener")
 public class DynamoDBConfig {
+
+    private static final Logger log = getLogger(DynamoDBConfig.class);
 
     @Value("${amazon.dynamodb.endpoint}")
     private String amazonDynamoDBEndpoint;
@@ -78,20 +83,25 @@ public class DynamoDBConfig {
     }
 
     private static void deleteTables(AmazonDynamoDB amazonDynamoDB, DynamoDBMapper dynamoDBMapper) {
+        log.debug("deleteTables()");
         try {
             DeleteTableRequest deleteTableRequest = dynamoDBMapper.generateDeleteTableRequest(UrlInfo.class);
             DeleteTableResult deleteTableResult = amazonDynamoDB.deleteTable(deleteTableRequest);
         } catch (ResourceNotFoundException e) {
+            log.warn("Error deleting table", e);
         }
 
         try {
             DeleteTableRequest deleteTableRequest = dynamoDBMapper.generateDeleteTableRequest(Counter.class);
             DeleteTableResult deleteTableResult = amazonDynamoDB.deleteTable(deleteTableRequest);
         } catch (ResourceNotFoundException e) {
+            log.warn("Error deleting table", e);
         }
     }
 
     private static void createTables(AmazonDynamoDB amazonDynamoDB, DynamoDBMapper dynamoDBMapper) {
+        log.debug("createTables()");
+
         CreateTableRequest createUrlInfoTableRequest = dynamoDBMapper.generateCreateTableRequest(UrlInfo.class);
         createUrlInfoTableRequest.setProvisionedThroughput(new ProvisionedThroughput(1L, 1L));
         CreateTableResult createUrlInfoTableResponse = amazonDynamoDB.createTable(createUrlInfoTableRequest);
