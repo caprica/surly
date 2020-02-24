@@ -33,14 +33,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.StringUtils;
-import uk.co.caprica.surly.domain.Counter;
-import uk.co.caprica.surly.domain.UrlInfo;
+import uk.co.caprica.surly.shortener.Counter;
+import uk.co.caprica.surly.shortener.UrlInfo;
 
 /**
  * Configuration for DynamoDB.
  */
 @Configuration
-@EnableDynamoDBRepositories(basePackages = "uk.co.caprica.surly.repository")
+@EnableDynamoDBRepositories(basePackages = "uk.co.caprica.surly.shortener")
 public class DynamoDBConfig {
 
     @Value("${amazon.dynamodb.endpoint}")
@@ -77,17 +77,13 @@ public class DynamoDBConfig {
         CreateTableRequest tableRequest = dynamoDBMapper.generateCreateTableRequest(UrlInfo.class);
         tableRequest.setProvisionedThroughput(new ProvisionedThroughput(1L, 1L));
         CreateTableResult r = amazonDynamoDB.createTable(tableRequest);
-        System.out.println("REATE TABLE RESULT " + r);
 
         CreateTableRequest t2 = dynamoDBMapper.generateCreateTableRequest(Counter.class);
         t2.setProvisionedThroughput(new ProvisionedThroughput(1L, 1L));
         r = amazonDynamoDB.createTable(t2);
-        System.out.println("REATE TABLE RESULT " + r);
-
 
         DescribeTableRequest dt = new DescribeTableRequest().withTableName("UrlInfo");
         DescribeTableResult dr = amazonDynamoDB.describeTable(dt);
-        System.out.println("DESCRIBE TABLE RESULT " + dr);
 
 //        counterRepository.save(new Counter("HashId", 0L));
 

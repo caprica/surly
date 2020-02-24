@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.co.caprica.surly.counter.dynamodb;
+package uk.co.caprica.surly.shortener.dynamodb;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.model.AttributeAction;
@@ -23,7 +23,7 @@ import com.amazonaws.services.dynamodbv2.model.AttributeValueUpdate;
 import com.amazonaws.services.dynamodbv2.model.ReturnValue;
 import com.amazonaws.services.dynamodbv2.model.UpdateItemRequest;
 import org.springframework.stereotype.Component;
-import uk.co.caprica.surly.counter.AtomicCounter;
+import uk.co.caprica.surly.shortener.AtomicCounter;
 
 /**
  * An atomic counter implemented using DynamoDB.

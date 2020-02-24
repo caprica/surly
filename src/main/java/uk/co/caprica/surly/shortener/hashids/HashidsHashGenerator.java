@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package uk.co.caprica.surly.hash.hashids;
+package uk.co.caprica.surly.shortener.hashids;
 
 import org.hashids.Hashids;
 import org.springframework.stereotype.Component;
-import uk.co.caprica.surly.hash.HashGenerator;
+import uk.co.caprica.surly.shortener.HashGenerator;
 
 /**
  * Implementation of a component that generates hash strings using the Hashids library.

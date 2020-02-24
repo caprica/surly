@@ -14,31 +14,18 @@
  * limitations under the License.
  */
 
-package uk.co.caprica.surly.repository;
+package uk.co.caprica.surly.shortener;
 
 import org.socialsignin.spring.data.dynamodb.repository.EnableScan;
 import org.springframework.data.repository.CrudRepository;
-import uk.co.caprica.surly.domain.UrlInfo;
-
-import java.util.Optional;
 
 /**
- * Specification for a Spring Data repository providing persistence for {@link UrlInfo} instances.
+ * Specification for a Spring Data repository providing persistence for {@link Counter} instances.
  * <p>
  * <em>Developer Note:</em>
  * <p>
  * The Spring Data repository gives us automatic implementations for various CRUD operations.
- * <p>
- * In this case, we also need a custom query which is automatically generated based on the method name.
  */
 @EnableScan
-public interface UrlInfoRepository extends CrudRepository<UrlInfo, String> {
-
-    /**
-     * Find an entity for a particular long URL value.
-     *
-     * @param longUrl long URL value
-     * @return optional entity
-     */
-    Optional<UrlInfo> findByLongUrl(String longUrl);
+public interface CounterRepository extends CrudRepository<Counter, String> {
 }

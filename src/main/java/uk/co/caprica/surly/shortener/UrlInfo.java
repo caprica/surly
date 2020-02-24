@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.co.caprica.surly.domain;
+package uk.co.caprica.surly.shortener;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;

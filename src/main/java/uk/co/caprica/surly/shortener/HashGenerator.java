@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-package uk.co.caprica.surly.repository;
-
-import org.socialsignin.spring.data.dynamodb.repository.EnableScan;
-import org.springframework.data.repository.CrudRepository;
-import uk.co.caprica.surly.domain.Counter;
+package uk.co.caprica.surly.shortener;
 
 /**
- * Specification for a Spring Data repository providing persistence for {@link Counter} instances.
- * <p>
- * <em>Developer Note:</em>
- * <p>
- * The Spring Data repository gives us automatic implementations for various CRUD operations.
+ * Specification for a component that generates hash strings.
  */
-@EnableScan
-public interface CounterRepository extends CrudRepository<Counter, String> {
+public interface HashGenerator {
+
+    /**
+     * Generate a new hash.
+     *
+     * @param value value to hash
+     * @return hashed string
+     */
+    String generateHash(long value);
 }

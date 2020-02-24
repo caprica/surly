@@ -14,18 +14,20 @@
  * limitations under the License.
  */
 
-package uk.co.caprica.surly.hash;
+package uk.co.caprica.surly;
+
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
 /**
- * Specification for a component that generates hash strings.
+ * Application servlet initialiser.
+ * <p>
+ * This component will be automatically discovered when the application is deployed in a servlet container.
  */
-public interface HashGenerator {
+public class SurlyServletInitializer extends SpringBootServletInitializer {
 
-    /**
-     * Generate a new hash.
-     *
-     * @param value value to hash
-     * @return hashed string
-     */
-    String generateHash(long value);
+	@Override
+	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+		return application.sources(SurlyApplication.class);
+	}
 }

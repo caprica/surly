@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.co.caprica.surly.counter;
+package uk.co.caprica.surly.shortener;
 
 /**
  * Specification for a component that provides an atomic counter.

@@ -14,14 +14,9 @@
  * limitations under the License.
  */
 
-package uk.co.caprica.surly.service;
+package uk.co.caprica.surly.shortener;
 
 import org.springframework.stereotype.Service;
-import uk.co.caprica.surly.UrlShortener;
-import uk.co.caprica.surly.counter.AtomicCounter;
-import uk.co.caprica.surly.domain.UrlInfo;
-import uk.co.caprica.surly.hash.HashGenerator;
-import uk.co.caprica.surly.repository.UrlInfoRepository;
 
 import java.util.Date;
 import java.util.Optional;

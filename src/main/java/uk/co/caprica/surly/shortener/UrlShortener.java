@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.co.caprica.surly;
+package uk.co.caprica.surly.shortener;
 
 import java.util.Optional;
 
