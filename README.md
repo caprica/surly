@@ -132,6 +132,8 @@ _Note currently the container version does not work as-is because it tries to co
 
 Reference documentation [here](https://kubernetes.io/docs/tasks).
 
+Example Kubernetes configuration files are in the project `etc` directory.
+
 ### Deployment
 
 Container configuration for the application is specified in a standard Kubernetes "deployment" file.
@@ -140,6 +142,11 @@ In `surly-deployment.yaml`:
 
 ```
 pending
+```
+
+To apply the file:
+```
+kubectl create -f surly-deployment.yaml
 ```
 
 ### Secrets
@@ -161,6 +168,11 @@ In `surly-secret.yaml`:
 pending
 ```
 
+To apply the file:
+```
+kubectl create -f surly-secret.yaml
+```
+
 ### Service
 
 To expose the application as a usable service, the necessary configuration is specified in a standard Kubernetes
@@ -170,6 +182,11 @@ In `surly-service.yaml`:
 
 ```
 pending
+```
+
+To apply the file:
+```
+kubectl create -f surly-service.yaml
 ```
 
 ## Copyright and License
