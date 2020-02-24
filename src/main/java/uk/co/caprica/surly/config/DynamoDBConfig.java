@@ -87,6 +87,7 @@ public class DynamoDBConfig {
         try {
             DeleteTableRequest deleteTableRequest = dynamoDBMapper.generateDeleteTableRequest(UrlInfo.class);
             DeleteTableResult deleteTableResult = amazonDynamoDB.deleteTable(deleteTableRequest);
+            log.debug("deleteTableResult={}", deleteTableResult);
         } catch (ResourceNotFoundException e) {
             log.warn("Error deleting table", e);
         }
@@ -94,6 +95,7 @@ public class DynamoDBConfig {
         try {
             DeleteTableRequest deleteTableRequest = dynamoDBMapper.generateDeleteTableRequest(Counter.class);
             DeleteTableResult deleteTableResult = amazonDynamoDB.deleteTable(deleteTableRequest);
+            log.debug("deleteTableResult={}", deleteTableResult);
         } catch (ResourceNotFoundException e) {
             log.warn("Error deleting table", e);
         }
@@ -105,9 +107,11 @@ public class DynamoDBConfig {
         CreateTableRequest createUrlInfoTableRequest = dynamoDBMapper.generateCreateTableRequest(UrlInfo.class);
         createUrlInfoTableRequest.setProvisionedThroughput(new ProvisionedThroughput(1L, 1L));
         CreateTableResult createUrlInfoTableResponse = amazonDynamoDB.createTable(createUrlInfoTableRequest);
+        log.debug("createUrlInfoTableResponse={}", createUrlInfoTableResponse);
 
         CreateTableRequest createCounterTableRequest = dynamoDBMapper.generateCreateTableRequest(Counter.class);
         createCounterTableRequest.setProvisionedThroughput(new ProvisionedThroughput(1L, 1L));
         CreateTableResult createCounterTableResponse = amazonDynamoDB.createTable(createCounterTableRequest);
+        log.debug("createCounterTableResponse={}", createCounterTableResponse);
     }
 }
