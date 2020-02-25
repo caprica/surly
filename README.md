@@ -189,6 +189,24 @@ To apply the file:
 kubectl create -f surly-service.yaml
 ```
 
+## Swagger API Documentation
+
+### Local End-point
+
+[http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+
+```
+pending
+```
+
+### Customisation
+
+To re-skin the Swagger UI, e.g. with corporate or project branding instead of the default Swagger branding, it is
+necessary to copy the resources from the Swagger UI project (springfox) into your project `resources` folder and do
+whatever customisations you want there.
+
+This would be instead of including the springfox dependency in the project `pom.xml` file.
+
 ## Copyright and License
 
 This project is licensed according to the [Apache Software License 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt).

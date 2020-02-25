@@ -16,6 +16,11 @@
 
 package uk.co.caprica.surly.shortener;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +40,10 @@ import static org.slf4j.LoggerFactory.getLogger;
 /**
  * Web-service end-point for the URL Shortener services.
  */
+@Api(
+    value = "URL Shortener",
+    tags = {"url-shortener"}
+)
 @RestController
 public class UrlShortenerController {
 
@@ -52,8 +61,14 @@ public class UrlShortenerController {
      * @param longUrl long URL
      * @return short URL token
      */
-    @PostMapping("/u")
-    public ResponseEntity<String> getShortUrl(@RequestBody String longUrl) {
+    @ApiOperation(value = "Create, or get an already existing, short URL token for a given long URL", tags = {"url-shortener"})
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "The short URL token"),
+        @ApiResponse(code = 400, message = "Invalid URL supplied"),
+    })
+    @PostMapping(value = "/u", consumes = "text/plain", produces = "text/plain")
+    public ResponseEntity<String> getShortUrl(
+        @ApiParam(name = "longUrl", value = "Ordinary URL", example = "httpp://www.google.com") @RequestBody String longUrl) {
         log.info("getShortUrl(longUrl={})", longUrl);
         try {
             new URL(longUrl);
@@ -69,8 +84,14 @@ public class UrlShortenerController {
      * @param token short URL token
      * @return long URL, if it exists, otherwise a not-found response
      */
-    @GetMapping("/u/{token}")
-    public ResponseEntity<String> getLongUrl(@PathVariable("token") String token) {
+    @ApiOperation(value = "Get a long URL for a given short URL token", tags = {"url-shortener"})
+    @ApiResponses(value = {
+        @ApiResponse(code = 302, message = "The short URL token"), // FIXME 200 would do here really
+        @ApiResponse(code = 404, message = "Long URL not found for the given short URL token"),
+    })
+    @GetMapping(value = "/u/{token}", produces = "text/plain")
+    public ResponseEntity<String> getLongUrl(
+        @ApiParam(name = "token", value = "Short URL token", example = "14NLK7") @PathVariable("token") String token) {
         log.info("getLongUrl(token={})", token);
         return urlShortenerService.getLongUrl(token)
             .map(longUrl -> new ResponseEntity<>(longUrl, HttpStatus.FOUND))
