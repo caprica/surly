@@ -22,6 +22,8 @@ import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
+import springfox.documentation.service.Contact;
+import springfox.documentation.service.Tag;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
@@ -38,16 +40,15 @@ public class SwaggerConfig {
             .paths(PathSelectors.any())
             .build()
             .useDefaultResponseMessages(false) // FIXME doesn't prevent an unused 200 being generated
-            .apiInfo(apiInfo());
+            .apiInfo(apiInfo())
+            .tags(new Tag("URL Shortener", "API for the URL-shortening service"));
     }
-
-    // FIXME use annotations on a class somewhere instead of this?
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
             .title("Surly API")
             .description("Surly URL Shortener REST API")
-//            .contact(new Contact("Mark Lee", "github.com/caprica/surly", "mark.lee@capricasoftware.co.uk"))
+            .contact(new Contact("Surly", "https://github.com/caprica/surly", "mark.lee@capricasoftware.co.uk"))
             .license("Apache 2.0")
             .licenseUrl("http://www.apache.org/licenses/LICENSE-2.0.html")
             .version("0.0.1") // FIXME config/property?

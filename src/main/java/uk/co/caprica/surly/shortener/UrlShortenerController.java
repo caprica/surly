@@ -41,8 +41,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  * Web-service end-point for the URL Shortener services.
  */
 @Api(
-    value = "URL Shortener",
-    tags = {"url-shortener"}
+    tags = {"URL Shortener"}
 )
 @RestController
 public class UrlShortenerController {
@@ -61,7 +60,7 @@ public class UrlShortenerController {
      * @param longUrl long URL
      * @return short URL token
      */
-    @ApiOperation(value = "Create, or get an already existing, short URL token for a given long URL", tags = {"url-shortener"})
+    @ApiOperation(value = "Create, or get an already existing, short URL token for a given long URL")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "The short URL token"),
         @ApiResponse(code = 400, message = "Invalid URL supplied"),
@@ -84,7 +83,7 @@ public class UrlShortenerController {
      * @param token short URL token
      * @return long URL, if it exists, otherwise a not-found response
      */
-    @ApiOperation(value = "Get a long URL for a given short URL token", tags = {"url-shortener"})
+    @ApiOperation(value = "Get a long URL for a given short URL token")
     @ApiResponses(value = {
         @ApiResponse(code = 302, message = "The short URL token"), // FIXME 200 would do here really
         @ApiResponse(code = 404, message = "Long URL not found for the given short URL token"),
