@@ -128,6 +128,61 @@ docker run -i -t caprica/surly
 
 _Note currently the container version does not work as-is because it tries to connect to a local DynamoDB instance._
 
+### Layered Images
+
+Each line in a Dockerfile potentially (most likely) creates a new layer in the image. This depends on the command given,
+some commands may not in fact cause a new layer to be generated.
+
+When images are built, they are built from all of those layers. Layers are only built if they have not changed,
+otherwise they are simply pulled from a local cache.
+
+This is important, because structuring the Dockerfile in the most optimal way will reduce image downloads (from
+repositories) and decrease build times.
+
+The strategy therefore should be (where possible) to specify commands in the Dockerfile in order of least likely to
+change (or perhaps slowest to build) first, followed later by those commands that are most likely to change.
+
+Typically this will mean:
+
+ * the main image (e.g. the one containing the base Operating System and perhaps some minimal set of installed software)
+   will be specified first;
+ * next perhaps any installations of dependent software using operating system package managers;
+ * things like unchanging settings such as adding groups and users;
+ * commands that deal with copying project build artifacts to the image;
+ * finally the main command that runs, or is the entry-point, for the image.
+
+Here it is clear the operating system image will rarely change, so this is first, whereas the build artifacts which
+will of course change frequently are specified as late as possible.
+
+### Stale/Dangling Images
+
+Each docker build invocation creates a new image - how many of the layers in the image are built depends on what is
+unchanged from the previous build and can be pulled from the cache, and what has changed since the last build.
+
+Each build will end up in the local image repository.
+
+As mentioned above, `docker images` can be used to show the current state of the local image repository.
+
+From the list of images displayed it can be determined if there are any old, dangling, or otherwise no longer needed
+images in the repository. These old images will consume potentially large amounts of disk space, so from time to time
+these redundant images should be 'pruned' to remove them from the local repository.
+
+From the Docker documentation, "a dangling image is an image that is not tagged and not referenced by any container".
+These images can be cleaned up by:
+
+```
+docker image prune
+```
+
+There may be other redundant images than purely dangling ones. To remove all of those images that are not currently
+associated with a container, use:
+
+```
+docker image prune -a
+```
+
+For more information refer to the [reference documentation](https://docs.docker.com/config/pruning).
+
 ## Kubernetes
 
 Reference documentation [here](https://kubernetes.io/docs/tasks).
